@@ -14,7 +14,7 @@ type Page struct {
   Body []byte
 }
 
-var templates = template.Must(template.ParseFiles("edit.html", "view.html"))
+var templates = template.Must(template.ParseFiles("./tmpl/edit.html", "./tmpl/view.html"))
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 
 func (p *Page) save() error {
@@ -32,7 +32,7 @@ func loadPage(title string) (*Page, error) {
 }
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p* Page) {
-  err := templates.ExecuteTemplate(w, tmpl + ".html", p)
+  err := templates.ExecuteTemplate(w, "" + tmpl + ".html", p)
   if err != nil {
     http.Error(w, err.Error(), http.StatusInternalServerError)
   }
