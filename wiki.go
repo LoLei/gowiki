@@ -15,7 +15,7 @@ type Page struct {
 }
 
 var templates = template.Must(template.ParseFiles("./tmpl/frontpage.html", "./tmpl/edit.html", "./tmpl/view.html"))
-var validPath = regexp.MustCompile("^/(hello|edit|save|view)/([a-zA-Z0-9]+)$")
+var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 
 func (p *Page) save() error {
   filename := "./data/" + p.Title + ".txt"
@@ -38,7 +38,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p* Page) {
   }
 }
 
-func frontpageHandler(w http.ResponseWriter, r *http.Request, title string) {
+func frontpageHandler(w http.ResponseWriter, r *http.Request) {
   // TODO: Loop for all pages to display a list
   // p, err := loadPage(title)
   renderTemplate(w, "frontpage", nil)
@@ -84,7 +84,7 @@ func makeHandler(fn func (http.ResponseWriter, *http.Request, string)) http.Hand
 }
 
 func main() {
-  http.HandleFunc("/hello/", makeHandler(frontpageHandler))
+  http.HandleFunc("/", frontpageHandler)
   http.HandleFunc("/view/", makeHandler(viewHandler))
   http.HandleFunc("/edit/", makeHandler(editHandler))
   http.HandleFunc("/save/", makeHandler(saveHandler))
