@@ -2,11 +2,13 @@
 package main
 
 import (
+  "fmt"
   "html/template"
   "io/ioutil"
   "log"
   "net/http"
   "regexp"
+  "strings"
 )
 
 type Page struct {
@@ -39,8 +41,29 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p* Page) {
 }
 
 func frontpageHandler(w http.ResponseWriter, r *http.Request) {
-  // TODO: Loop for all pages to display a list
-  // p, err := loadPage(title)
+  files, err := ioutil.ReadDir("./data/")
+  if err != nil {
+    log.Fatal(err)
+  }
+  var pages []*Page
+  for _, f := range files {
+    fmt.Println(f.Name())
+    title := strings.Replace(f.Name(), ".txt", "", -1)
+    p, err := loadPage(title)
+    if err == nil {
+      fmt.Println(p.Title)
+      fmt.Println(string(p.Body))
+    }
+    pages = append(pages, p)
+  }
+
+  fmt.Println("--------------------")
+
+  for _, page := range pages {
+    fmt.Println(page.Title)
+    fmt.Println(string(page.Body))
+  }
+
   renderTemplate(w, "frontpage", nil)
 }
 
