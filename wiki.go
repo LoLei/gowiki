@@ -2,7 +2,6 @@
 package main
 
 import (
-  "fmt"
   "html/template"
   "io/ioutil"
   "log"
@@ -48,25 +47,20 @@ func frontpageHandler(w http.ResponseWriter, r *http.Request) {
 
   renderTemplate(w, "frontpage", nil)
 
+  // Just for testing container
   var pages []*Page
   for _, f := range files {
-    fmt.Println(f.Name())
     title := strings.Replace(f.Name(), ".txt", "", -1)
     p, err := loadPage(title)
-    if err == nil {
-      fmt.Println(p.Title)
-      fmt.Println(string(p.Body))
+    if err != nil {
+      return
     }
     pages = append(pages, p)
   }
 
-  fmt.Println("--------------------")
-
+  // Container works
   for _, page := range pages {
-    fmt.Println(page.Title)
-    fmt.Println(string(page.Body))
-    // fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", page.Title, page.Body)
-  renderTemplate(w, "pageentry", page)
+    renderTemplate(w, "pageentry", page)
   }
 
 }
