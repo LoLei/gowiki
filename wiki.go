@@ -16,7 +16,7 @@ type Page struct {
   Body []byte
 }
 
-var templates = template.Must(template.ParseFiles("./tmpl/frontpage.html", "./tmpl/edit.html", "./tmpl/view.html"))
+var templates = template.Must(template.ParseFiles("./tmpl/frontpage.html", "./tmpl/pageentry.html", "./tmpl/edit.html", "./tmpl/view.html"))
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 
 func (p *Page) save() error {
@@ -45,6 +45,9 @@ func frontpageHandler(w http.ResponseWriter, r *http.Request) {
   if err != nil {
     log.Fatal(err)
   }
+
+  renderTemplate(w, "frontpage", nil)
+
   var pages []*Page
   for _, f := range files {
     fmt.Println(f.Name())
@@ -62,9 +65,10 @@ func frontpageHandler(w http.ResponseWriter, r *http.Request) {
   for _, page := range pages {
     fmt.Println(page.Title)
     fmt.Println(string(page.Body))
+    // fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", page.Title, page.Body)
+  renderTemplate(w, "pageentry", page)
   }
 
-  renderTemplate(w, "frontpage", nil)
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request, title string) {
