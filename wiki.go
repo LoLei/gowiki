@@ -105,6 +105,7 @@ func makeHandler(fn func (http.ResponseWriter, *http.Request, string)) http.Hand
 }
 
 func main() {
+  http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
   http.HandleFunc("/", frontpageHandler)
   http.HandleFunc("/view/", makeHandler(viewHandler))
   http.HandleFunc("/edit/", makeHandler(editHandler))
